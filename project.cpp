@@ -55,8 +55,39 @@ int main() {
       current_file.nr_lines = current_file.lines.size();
       all_files.push_back(current_file);
    }
-    
 
+
+   for(int i = 0; i < all_files[0].nr_lines; i++) {
+      for(int j = 1; j < nr_of_files; ++j)
+         for(int t = 0; t < all_files[j].nr_lines; ++t) {
+            if(all_files[j].lines[t][0] == '#') 
+               continue;
+            if(all_files[0].lines[i] == all_files[j].lines[t] && all_files[0].lines[i] != "") {
+               all_files[j].lines.erase(all_files[j].lines.begin() + t);
+               all_files[j].nr_lines--, --t, ++total_deleted_lines;
+            }
+         }
+   }
+
+
+   for(int j = 1; j < nr_of_files; ++j) {
+      for(int t = 0; t < all_files[j].nr_lines; ++t) {
+         if(all_files[j].lines[t] == "" && all_files[j].lines[t - 1][0] == '#' && t >= 0) {
+            for(int poz = t - 1; all_files[j].lines[poz][0] == '#' ; poz--) {
+               all_files[j].lines.erase(all_files[j].lines.begin() + poz);
+               all_files[j].nr_lines--, --t, ++total_deleted_lines;
+               if(all_files[j].lines[poz - 1][0] == '#' && poz - 1 == 0) {
+                  poz--;
+                  all_files[j].lines.erase(all_files[j].lines.begin() + poz);
+                  all_files[j].nr_lines--, --t, ++total_deleted_lines;
+                  break;
+               }
+            }
+         }
+      }
+   }
+
+   
 
    return 0;
 }
